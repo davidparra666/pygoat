@@ -66,3 +66,4 @@ jobs:
           command: quickview
           image: pygoat-app
         continue-on-error: true
+        
