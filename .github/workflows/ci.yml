@@ -20,18 +20,15 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install Bandit
-        run: pip install bandit
-
       - name: Run Bandit
-        run: |
-          bandit -r . -f json -o sast-bandit.json -ll || true
+  run: |
+    pip install bandit[sarif]
+    bandit -r . -f sarif -o bandit.sarif || true
 
-      - name: Upload Bandit results
-        uses: actions/upload-artifact@v4
-        with:
-          name: bandit-results
-          path: sast-bandit.json
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: bandit.sarif
 
 
   semgrep_scan:
@@ -45,14 +42,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Semgrep
-        run: |
-          semgrep scan --severity=ERROR --severity=WARNING --json --output=sast-semgrep.json || true
+  run: |
+    semgrep scan --severity=ERROR --severity=WARNING --sarif --output=semgrep.sarif || true
 
-      - name: Upload Semgrep results
-        uses: actions/upload-artifact@v4
-        with:
-          name: semgrep-results
-          path: sast-semgrep.json
+- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: semgrep.sarif
 
 
   docker_build_scan:
