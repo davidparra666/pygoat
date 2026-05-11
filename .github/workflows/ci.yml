@@ -24,7 +24,6 @@ jobs:
   run: |
     pip install bandit[sarif]
     bandit -r . -f sarif -o bandit.sarif || true
-
 - name: Upload SARIF
   uses: github/codeql-action/upload-sarif@v3
   with:
